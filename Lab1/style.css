@@ -14,3 +14,45 @@ body {
       align-items: center;
       justify-content: center;
 }
+
+table, th, td{
+      border: 5px rgb(109, 57, 20);
+}
+th, td{
+      background-color: #c19b82;
+}
+
+.cw1{
+      justify-content: left;
+      align-items: baseline;
+      display: block;
+      justify-content: baseline;
+      margin-left: 100px;
+      margin-right: 100px;
+}
+
+
+.cw3 {
+      display: flex;
+      justify-content: center;
+}
+.box {
+      width: 100px;
+      height: 100px;
+      margin: 10px;
+}
+#box_red {
+      background-color: rgb(141, 49, 49);
+}
+#box_blue {
+      background-color: rgb(79, 79, 218);
+}
+#box_pink {
+      background-color: rgb(163, 85, 153);
+}
+#box_purple {
+      background-color: rgb(133, 71, 209);
+}
+#box_black {
+      background-color: black;
+}
