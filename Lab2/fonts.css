@@ -1,0 +1,27 @@
+.Bitter800{
+  font-family: "Bitter", serif;
+  font-optical-sizing: auto;
+  font-weight: 1000;
+  font-style: bold;
+}
+
+.Bitter600{
+  font-family: "Bitter", serif;
+  font-optical-sizing: auto;
+  font-weight: 600;
+  font-style: bold;
+}
+
+.Raleway {
+  font-family: "Raleway", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 90;
+  font-style: normal;
+}
+
+.Raleway150 {
+  font-family: "Raleway", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 425;
+  font-style: normal;
+}
