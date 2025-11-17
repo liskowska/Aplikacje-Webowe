@@ -18,7 +18,7 @@ html{
     padding: 0%; 
 }  
 
-.hgroup{
+hgroup{
     font-family: "Raleway";
 }
 
@@ -196,10 +196,10 @@ hr{
 
 .box img {
   width: 100%;
-  height: 200px; /* dowolna stała wysokość */
+  height: 200px; 
   object-fit: cover; 
   display: block;
-  border-radius: 8px; /* opcjonalnie */
+  border-radius: 8px;
 }
 
 
@@ -522,9 +522,9 @@ footer{
     }
     .recipe-box,
     .recipe-photo {
-        width: 100%; /* Przy mniejszych ekranach dopasuj szerokość do kontenera */
-        max-width: 320px; /* Maksymalna szerokość na większych telefonach */
-        margin: 10px auto; /* Wyśrodkuj elementy i zmniejsz margines */
+        width: 100%; 
+        max-width: 320px;
+        margin: 10px auto; 
     }
     .recipe-wrapper {
         flex-direction: column;
