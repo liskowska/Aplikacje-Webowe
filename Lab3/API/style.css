@@ -1,0 +1,38 @@
+.product-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 20px 0;
+}
+
+.product-table th,
+.product-table td {
+  border: 1px solid #ddd;
+  padding: 10px;
+  vertical-align: top;
+}
+
+.product-table th {
+  background-color: #f4f4f4;
+  text-align: left;
+}
+
+.product-table img {
+  width: 150px;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.search-wrapper{
+  display: flex;
+  flex-direction: column;
+  gap: .25rem;
+}
+
+input{
+  font-size: 1rem;
+}
+
+.hide{
+  display: none;
+}

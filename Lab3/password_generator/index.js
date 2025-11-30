@@ -15,6 +15,7 @@ function handleGenerate(){
 
     const password = generatePassword(minLength, maxLength, includeLowercase, includeUppercase, includeNumbers, includeSymbols);
     document.getElementById("result").textContent = password;
+    alert(password);
 }
 
 function generatePassword(minLength, maxlength, includeLowercase, includeUppercase, includeNumbers, includeSymbols){
