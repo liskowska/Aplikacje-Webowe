@@ -1,0 +1,8 @@
+@font-face {
+  font-family: flappyFont; /* set name */
+  src: url("assets/FlappyBirdRegular.ttf") format(truetype); /* url of the font */
+}
+
+p {
+  font-family: flappyFont; /* use font */
+}

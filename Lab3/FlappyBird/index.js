@@ -1,15 +1,33 @@
 var canvas = document.getElementById("canvas");
 var context = canvas.getContext("2d");
 
-var bird = new Image();
+var isFalling = false;
+var gameState = "start";   // start | playing | die
+
+var birdUp = new Image();
+var birdMid = new Image();
+var birdDown = new Image();
 var background = new Image();
 var foreground = new Image();
 var pipeUp = new Image();
 var pipeDown = new Image();
 
-var birdUp = new Image();
-var birdMid = new Image();
-var birdDown = new Image();
+var startMessage = new Image();
+var dieMessage = new Image();
+
+birdUp.src = "assets/Flappy Bird/yellowbird-upflap.png";
+birdMid.src = "assets/Flappy Bird/yellowbird-midflap.png";
+birdDown.src = "assets/Flappy Bird/yellowbird-downflap.png";
+
+background.src = "assets/Flappy Bird/background-day.png";
+foreground.src = "assets/Flappy Bird/base.png";
+pipeUp.src = "assets/Flappy Bird/pipe-green-up.png";
+pipeDown.src = "assets/Flappy Bird/pipe-green-down.png";
+
+startMessage.src = "assets/UI/message.png"; 
+dieMessage.src = "assets/UI/gameover.png";
+
+var birdState = birdMid;
 
 const digitImages = [];
 for (let i = 0; i <= 9; i++) {
@@ -18,37 +36,45 @@ for (let i = 0; i <= 9; i++) {
     digitImages.push(img);
 }
 
-birdUp.src = "assets/Flappy Bird/yellowbird-upflap.png";
-birdMid.src = "assets/Flappy Bird/yellowbird-midflap.png";
-birdDown.src = "assets/Flappy Bird/yellowbird-downflap.png";
-
-var birdState = birdMid; // początkowy stan ptaka
-
-bird.src = "assets/Flappy Bird/yellowbird-midflap.png";
-background.src = "assets/Flappy Bird/background-day.png";
-foreground.src = "assets/Flappy Bird/base.png";
-pipeUp.src = "assets/Flappy Bird/pipe-green-up.png";
-pipeDown.src = "assets/Flappy Bird/pipe-green-down.png";
-
 var gap = 90;
 var birdX = 10;
 var birdY = 150;
-var constant;
 var velocity = 0;
 var gravity = 0.15;
 var lift = -3;
 var maxVelocity = 5;
 
 var score = 0;
+var pipe = [];
 
 var fly_sound = new Audio("assets/Sound Efects/wing.wav");
 var score_sound = new Audio("assets/Sound Efects/point.wav");
+var die_sound = new Audio("assets/Sound Efects/die.wav")
 
-document.addEventListener("keydown", moveUp);
+document.addEventListener("keydown", keyHandler);
 
+function keyHandler(e) {
+    if (e.code === "Space") {
 
-function startMenu(){
+        if (gameState === "start" || gameState === "die") {
+            startGame();
+        }
 
+        else if (gameState === "playing") {
+            moveUp();
+        }
+    }
+}
+
+function startGame() {
+    gameState = "playing";
+
+    pipe = [{ 
+        x: canvas.width, 
+        y: -100 }];
+    score = 0;
+    birdY = 150;
+    velocity = 0;
 }
 
 function moveUp() {
@@ -56,33 +82,36 @@ function moveUp() {
     fly_sound.play();
 }
 
-var pipe = [];
-pipe[0] = {
-    x: canvas.width,
-    y: -100
-};
-
-// Funkcja główna
 function draw() {
+    context.clearRect(0, 0, canvas.width, canvas.height);
     context.drawImage(background, 0, 0);
-    if (velocity < -1) {
-    birdState = birdUp;      // lecimy w górę
-    } else if (velocity > 1) {
-        birdState = birdDown;    // lecimy w dół
-    } else {
-        birdState = birdMid;     // lecimy prosto
+
+    if (gameState === "start") {
+        drawStartScreen();
+        requestAnimationFrame(draw);
+        return;
     }
 
-    for (var i = 0; i < pipe.length; i++) {
-        constant = pipeUp.height + gap;
+    if (gameState === "die") {
+        drawDieScreen();
+        requestAnimationFrame(draw);
+        return;
+    }
 
-        // rury
+    // state: playing
+    birdState =
+        velocity < -1 ? birdUp :
+        velocity > 1 ? birdDown : birdMid;
+
+    // wstawianie rur
+    for (let i = 0; i < pipe.length; i++) {
+        let constant = pipeUp.height + gap;
+
         context.drawImage(pipeDown, pipe[i].x, pipe[i].y);
         context.drawImage(pipeUp, pipe[i].x, pipe[i].y + constant);
 
         pipe[i].x--;
 
-        // dodanie nowej rury
         if (pipe[i].x === 100) {
             pipe.push({
                 x: canvas.width,
@@ -90,21 +119,22 @@ function draw() {
             });
         }
 
-        // hitboxy
-        var pipeLeft = pipe[i].x;
-        var pipeRight = pipe[i].x + pipeDown.width;
-        var birdRight = birdX + bird.width;
-        var birdBottom = birdY + bird.height;
+        let pipeLeft = pipe[i].x;
+        let pipeRight = pipe[i].x + pipeDown.width;
+        let birdRight = birdX + birdMid.width;
+        let birdBottom = birdY + birdMid.height;
 
         // kolizja
         if (
             (birdRight >= pipeLeft && birdX <= pipeRight &&
-             (birdY <= pipe[i].y + pipeDown.height ||
-              birdBottom >= pipe[i].y + constant)) ||
+            (birdY <= pipe[i].y + pipeDown.height ||
+            birdBottom >= pipe[i].y + constant)) ||
             birdBottom >= canvas.height - foreground.height ||
             birdY <= 0
         ) {
-            location.reload();
+            die_sound.play();
+            gameState = "die";
+            saveScore();
         }
 
         // punktacja
@@ -115,17 +145,15 @@ function draw() {
         }
     }
 
+    // ziemia
     context.drawImage(foreground, 0, canvas.height - foreground.height);
-    var angle = velocity * 0.15;
 
+    // animacja ptaka
+    let angle = velocity * 0.15;
     context.save();
     context.translate(birdX + birdState.width/2, birdY + birdState.height/2);
     context.rotate(angle);
-    context.drawImage(
-        birdState,
-        -birdState.width/2,
-        -birdState.height/2
-    );
+    context.drawImage(birdState, -birdState.width/2, -birdState.height/2);
     context.restore();
 
     // fizyka ptaka
@@ -133,29 +161,65 @@ function draw() {
     if (velocity > maxVelocity) velocity = maxVelocity;
     birdY += velocity;
 
-    context.fillStyle = "#000";
-    context.font = "20px Verdana";
-    drawScore(score, 10, 10); // np. lewy górny róg canvasu
+    drawScore(score, 10, 10);
 
     requestAnimationFrame(draw);
 }
 
+function drawStartScreen() {
+    context.drawImage(startMessage, canvas.width/2-92, canvas.height/2-150);
+}
+
+function drawDieScreen() {
+    context.drawImage(dieMessage, canvas.width/2-92, canvas.height/2 - 200);
+    drawScore(score, 140, 130);
+
+    let scores = JSON.parse(localStorage.getItem("scores") || "[]");
+
+    context.fillStyle = "rgba(255, 196, 0, 1)";
+    context.font = "30px flappyFont";
+    context.fillText("Best scores:", canvas.width / 2 - 100, canvas.height / 2 - 50);
+
+    for (let i = 0; i < scores.length; i++) {
+        drawScore(i + 1, canvas.width/2 - 25, canvas.height/2 + (i-1)*40 +3);
+        context.fillStyle = "rgba(0, 0, 0, 1)";
+        context.font = "60px flappyFont";
+        context.fillText(".", canvas.width/2, canvas.height/2 + i*40 - 3);
+        drawScore(
+            scores[scores.length - 1 - i],
+            canvas.width/2 + 20,
+            canvas.height/2 - i*40 + 125
+        );
+    }
+
+    context.fillStyle = "rgba(255, 196, 0, 1)";
+    context.font = "30px FlappyFont";
+    context.fillText("Press SPACE to try again", canvas.width/2-125, canvas.height/2 + 210);
+}
+
+function saveScore() {
+    let scores = JSON.parse(localStorage.getItem("scores") || "[]");
+    scores.push(score);
+    scores.sort((a, b) => b - a);
+    scores = scores.slice(0, 5);
+    localStorage.setItem("scores", JSON.stringify(scores));
+}
+
 function drawScore(number, x, y) {
-    const digits = number.toString().split(""); // np. 123 -> ["1","2","3"]
+    const digits = number.toString().split("");
     let offsetX = x;
 
     digits.forEach(digit => {
-        const img = digitImages[parseInt(digit)];
+        const img = digitImages[digit];
         context.drawImage(img, offsetX, y);
-        offsetX += img.width + 2; // przesunięcie o szerokość cyfry + odstęp
+        offsetX += img.width + 2;
     });
 }
 
-
 var assetsLoaded = 0;
-[bird, background, foreground, pipeDown, pipeUp].forEach(img => {
+[birdUp, birdMid, birdDown, background, foreground, pipeDown, pipeUp].forEach(img => {
     img.onload = () => {
         assetsLoaded++;
-        if (assetsLoaded === 5) draw();
+        if (assetsLoaded === 7) draw();
     };
 });
