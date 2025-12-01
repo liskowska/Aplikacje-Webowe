@@ -49,7 +49,7 @@ var pipe = [];
 
 var fly_sound = new Audio("assets/Sound Efects/wing.wav");
 var score_sound = new Audio("assets/Sound Efects/point.wav");
-var die_sound = new Audio("assets/Sound Efects/die.wav")
+var die_sound = new Audio("assets/Sound Efects/die.wav");
 
 document.addEventListener("keydown", keyHandler);
 

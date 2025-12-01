@@ -6,3 +6,7 @@
 p {
   font-family: flappyFont; /* use font */
 }
+
+body{
+  text-align: center;
+}
