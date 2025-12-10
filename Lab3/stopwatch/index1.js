@@ -25,7 +25,7 @@ function reset(){
         clearInterval(timer);
         let startTime = 0;
         let elapsedTime = 0;
-        display.textContent = "00:00:00:00"
+        display.textContent = "0min 00sec"
         let isRunning = false;
     }
 }
