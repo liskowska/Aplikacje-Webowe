@@ -1,0 +1,26 @@
+{
+  "name": "OnlineBookShopDB",
+  "version": "1.0.0",
+  "description": "Book Microservices with MongoDB In NodeJs",
+  "main": "bookServer.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "startbookserver": "node bookServer.js"
+  },
+  "author": "Małgorzata Liskowska",
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^1.4.0",
+    "bcrypt": "^6.0.0",
+    "body-parser": "^1.20.4",
+    "express": "^5.2.1",
+    "jsonwebtoken": "^9.0.3",
+    "mongodb": "^5.5.0",
+    "mongoose": "^7.2.2",
+    "node-fetch": "^3.3.2",
+    "request": "^2.88.2",
+    "sequelize": "^6.37.7",
+    "sqlite3": "^5.1.7",
+    "uuid": "^9.0.1"
+  }
+}
