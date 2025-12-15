@@ -1,7 +1,9 @@
 const express = require('express');
 const { Book } = require('./BookModel');
+const auth = require('./auth');
 
 const router = express.Router();
+const JWT_SECRET = '123';
 
 router.get('/books', async (req, res) => {
   const books = await Book.findAll();
@@ -14,7 +16,7 @@ router.get('/books/:id', async (req, res) => {
   res.json(book);
 });
 
-router.post('/books', async (req, res) => {
+router.post('/books', auth,  async (req, res) => {
   const { title, author, year } = req.body;
   if (!title || !author || !year) return res.status(422).json({ error: 'Brak wymaganych danych' });
 
@@ -22,7 +24,7 @@ router.post('/books', async (req, res) => {
   res.status(201).json(newBook);
 });
 
-router.delete('/books/:id', async (req, res) => {
+router.delete('/books/:id', auth, async (req, res) => {
   const book = await Book.findByPk(req.params.id);
   if (!book) return res.status(404).json({ error: 'Nie ma takiej książki' });
 

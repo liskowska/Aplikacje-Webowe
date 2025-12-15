@@ -4,7 +4,7 @@ const jwt = require('jsonwebtoken');
 const { User } = require('./UserModel');
 
 const router = express.Router();
-const JWT_SECRET = 'supersecretkey'; // w produkcji trzymać w ENV
+const JWT_SECRET = '123'; // w produkcji trzymać w ENV
 
 router.post('/register', async (req, res) => {
   try {

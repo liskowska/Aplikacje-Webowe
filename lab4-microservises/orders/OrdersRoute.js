@@ -1,21 +1,20 @@
 const express = require('express');
-// const fetch = require('node-fetch');
 const { Order } = require('./OrderModel');
+const auth = require('./auth');
 
-const router = express.Router(); // <-- używamy routera
+const router = express.Router();
+const JWT_SECRET = '123';
 
-// GET zamówienia użytkownika
 router.get('/orders/:userId', async (req, res) => {
   const orders = await Order.findAll({ where: { userId: req.params.userId } });
   res.json(orders);
 });
 
-router.post('/orders', async (req, res) => {
+router.post('/orders', auth, async (req, res) => {
   try {
     const { userId, bookId, quantity } = req.body;
     if (!userId || !bookId || !quantity) return res.status(422).json({ error: 'Brak danych' });
 
-    // Sprawdzenie bookId w Serwisie 1 (fetch globalny)
     const response = await fetch(`http://localhost:8080/api/books/${bookId}`);
     if (!response.ok) return res.status(404).json({ error: 'Nie ma takiej książki' });
 
@@ -31,8 +30,7 @@ router.post('/orders', async (req, res) => {
 });
 
 
-// DELETE zamówienia
-router.delete('/orders/:orderId', async (req, res) => {
+router.delete('/orders/:orderId', auth, async (req, res) => {
   const order = await Order.findByPk(req.params.orderId);
   if (!order) return res.status(404).json({ error: 'Nie ma takiego zamówienia' });
 
@@ -40,8 +38,7 @@ router.delete('/orders/:orderId', async (req, res) => {
   res.json({ ok: true });
 });
 
-// PATCH zamówienia
-router.patch('/orders/:orderId', async (req, res) => {
+router.patch('/orders/:orderId', auth, async (req, res) => {
   const order = await Order.findByPk(req.params.orderId);
   if (!order) return res.status(404).json({ error: 'Nie ma takiego zamówienia' });
 
@@ -49,4 +46,4 @@ router.patch('/orders/:orderId', async (req, res) => {
   res.json(updatedOrder);
 });
 
-module.exports = router; // <-- eksportujemy router
+module.exports = router;
